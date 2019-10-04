@@ -1,10 +1,10 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const helmet = require("helmet");
-const cookieParser = require("cookie-parser");
-const httpProxy = require("express-http-proxy");
-const { apmURL, getNewResponseHeaders, getNewRequestHeaders, urlMap } = require("./config/config")();
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+const httpProxy = require('express-http-proxy');
+const { apmURL, getNewResponseHeaders, getNewRequestHeaders, urlMap } = require('./config/config')();
 
 if (process.env.NODE_ENV === 'production' && process.env.apmURL) {
     const apm = require('elastic-apm-node').start({
@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'production' && process.env.apmURL) {
 
 const isAlive = (req, res, next) => {
     res.status(200);
-    res.send("Server Is Up");
+    res.send('Server Is Up');
 }
 
 const applyGenericMiddleware = (app) => {
@@ -25,7 +25,7 @@ const applyGenericMiddleware = (app) => {
     app.use('/health', isAlive);
 
     app.use(helmet());
-    app.use(cors({ origin: "*" }));
+    app.use(cors({ origin: '*' }));
     app.use(bodyParser.json());
     app.use(
         bodyParser.urlencoded({
@@ -57,7 +57,7 @@ const server = () => {
     }
     );
 
-    app.all("/*", (req, res, next) => proxy(locationMap(fullURL(req)))(req, res, next));
+    app.all('/*', (req, res, next) => proxy(locationMap(fullURL(req)))(req, res, next));
 
     return app;
 }

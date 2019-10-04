@@ -1,8 +1,8 @@
-const http = require("http");
-const dotenv = require("dotenv");
-const server = require("./server");
+const http = require('http');
+const dotenv = require('dotenv');
+const server = require('./server/server');
 
-//initialize
+// initialize
 dotenv.config();
 
 const app = server();
@@ -13,4 +13,4 @@ app.set('port', port);
 const httpServer = http.createServer(app);
 
 httpServer.listen(port);
-console.log("Server is listening on port: " + port);
+console.log('Server is listening on port: ' + port);
