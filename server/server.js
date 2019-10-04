@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const httpProxy = require('express-http-proxy');
-const { apmURL, getNewResponseHeaders, getNewRequestHeaders, urlMap } = require('./config/config')();
+const { apmURL, getNewResponseHeaders, getNewRequestHeaders, urlMap } = require('../config/config')();
 
 if (process.env.NODE_ENV === 'production' && process.env.apmURL) {
     const apm = require('elastic-apm-node').start({
@@ -34,6 +34,8 @@ const applyGenericMiddleware = (app) => {
     );
     app.use(cookieParser());
 
+    app.use(express.static('public'));
+
 }
 
 const fullURL = (req) => `${req.protocol}://${req.get('host')}`;
@@ -57,7 +59,8 @@ const server = () => {
     }
     );
 
-    app.all('/*', (req, res, next) => proxy(locationMap(fullURL(req)))(req, res, next));
+    app.all('/iframe/*', (req, res, next) => proxy(locationMap(fullURL(req)))(req, res, next));
+    app.get('/avocado', (req,res,next)=> {res.send('OK');})
 
     return app;
 }

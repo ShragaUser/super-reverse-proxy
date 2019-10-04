@@ -1,0 +1,28 @@
+body {
+    background-color: black;
+    text-align: right;
+}
+
+div.scrollmenu {
+    height: 95px;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+.fullscreen {
+    position: absolute;
+    top: 2%;
+    left: 98%;
+    background-color: transparent;
+    color: red;
+    text-align: left;
+    font-size: 24px;
+}
+
+.fullscreen:hover {
+    position: absolute;
+    top: 2%;
+    left: 93%;
+    background-color: white;
+    text-align: center;
+}
