@@ -40,7 +40,7 @@ var dealWithSites = function(err, response){
         data.forEach(item => {
             var button = document.createElement("input");
             configureButton(button, item.name, item.display, item.logo);
-            button.onclick = createOnClick(item.url);
+            button.onclick = createOnClick(item.url, item.proxy);
             frameChooserDiv.appendChild(button);
         })
     }
@@ -50,10 +50,11 @@ var dealWithSites = function(err, response){
  * checks if given url is relative
  * @param {string} url 
  */
-var createOnClick = function(url){
+var createOnClick = function(url, proxy){
     return function(){
-        var host = window.location.protocol+"//"+window.location.host;
         document.getElementById("myFrame").setAttribute("src", url);
+        document.getElementById("myFrame").setAttribute("proxy", proxy);
+        navigator.serviceWorker.controller.postMessage(proxy);
     }
 }
 

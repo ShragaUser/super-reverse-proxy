@@ -9,6 +9,10 @@ const {
 
 const applyProxyMiddleware = (app) => {
     const proxy = (location) => httpProxy(location, {
+        proxyReqPathResolver: (req) => {
+            const host = getHostFromReq(req.query.myProxyGoTo);
+            return req.query.myProxyGoTo.substring(host.length);
+        },
         proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
             proxyReqOpts.headers = {
                 ...proxyReqOpts.headers,
@@ -30,16 +34,18 @@ const applyProxyMiddleware = (app) => {
     const checkIfParamsExist = (req) => {
         return req.query.myProxyGoTo !== undefined ? true : false;
     }
-    const isProxy = (req,res,next) => checkIfParamsExist(req) ? proxy(getHostFromReq(req.query.myProxyGoTo))(req,res,next) : next();
+    const isProxy = (req, res, next) => checkIfParamsExist(req) ? proxy(getHostFromReq(req.query.myProxyGoTo))(req, res, next) : next();
     app.all('/*', isProxy);
-    app.get('/', (req,res,next) => res.sendFile(path.resolve(__dirname,"../../public/index.html")));
+    app.get('/', (req, res, next) => res.sendFile(path.resolve(__dirname, "../../public/index.html")));
 }
 
 const isIP = (url) => /^[0-9]/.test(url);
 const getHostFromReq = (url) => {
-    return isIP(url) ? url.split("/")[0] : url.split("/")[0]+"/"+url.split("/")[1]+"/"+url.split("/")[2];
+    return isIP(url) ? url.split("/")[0] : url.split("/")[0] + "/" + url.split("/")[1] + "/" + url.split("/")[2];
 }
 
 
 
-module.exports = { applyProxyMiddleware };
+module.exports = {
+    applyProxyMiddleware
+};

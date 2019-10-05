@@ -8,17 +8,20 @@ const applyRouteMiddleware = (app) => {
             name: "Frame",
             display: "original frame",
             logo: "1.png",
-            url: "/?myProxyGoTo=http://localhost:3000/"
+            url: "/?myProxyGoTo=http://localhost:3000/",
+            proxy: "http://localhost:3000/"
         },{
             name: "site 1",
             display: "important site",
             logo: "2.png",
-            url: "/?myProxyGoTo=https://www.addictinggames.com"
+            url: "/?myProxyGoTo=https://www.addictinggames.com",
+            proxy: "https://www.addictinggames.com/"
         }, {
             name: "site 2",
             display: "important site 2",
             logo: "3.png",
-            url: "https://wikipedia.com"
+            url: "/?myProxyGoTo=https://www.wikipedia.com",
+            proxy: "https://www.wikipedia.com/"
         }];
         res.status(200).send(items);
     })
