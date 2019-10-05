@@ -6,15 +6,14 @@ var serverUrl = self.registration.scope;
  * @param {string} url 
  */
 var getFullURL = function(url){
-    return serverUrl + (url.split("/")[3] || "");
+    return serverUrl + "?myProxyGoTo="+encodeURIComponent(url);
 }
 
 /**
  * Intecepts all XHR + Fetch Events and changes the host of the request if needed
  */
 self.addEventListener('fetch', function (event) {
-    // if request wasnt initially for my local registered scope
-    if(event.request.url.indexOf(serverUrl) !== 0){
+    if(event.request.url.indexOf(serverUrl) !== 0){ 
         event.respondWith(
             fetch(new Request(getFullURL(event.request.url), {...event.request}))
         );

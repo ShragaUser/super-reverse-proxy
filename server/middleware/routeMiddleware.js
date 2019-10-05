@@ -1,26 +1,19 @@
 const path = require("path");
 
 const applyRouteMiddleware = (app) => {
-    
-    app.get('/avocado', (req, res, next) => {
-        res.send('OK');
-    })
-
-    app.get('/frame', (req,res,next) =>{
-        res.sendFile(path.resolve(__dirname, "../../public/frame.html"));
-    })
+    app.get("/sw.js", (req,res,next)=> {res.sendFile(path.resolve(__dirname, "../../public/sw.js"))});
 
     app.get('/sites', (req, res, next) => {
         const items = [{
             name: "Frame",
             display: "original frame",
             logo: "1.png",
-            url: "./frame.html"
+            url: "/?myProxyGoTo=http://localhost:3000/"
         },{
             name: "site 1",
             display: "important site",
             logo: "2.png",
-            url: "https://wikipedia.com"
+            url: "/?myProxyGoTo=https://www.addictinggames.com"
         }, {
             name: "site 2",
             display: "important site 2",

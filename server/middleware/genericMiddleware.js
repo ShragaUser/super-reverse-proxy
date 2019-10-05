@@ -25,7 +25,7 @@ const applyGenericMiddleware = (app) => {
     );
     app.use(cookieParser());
 
-    app.use(express.static('public'));
+    app.use('/static/',express.static('public'));
 }
 
 module.exports = { applyGenericMiddleware };
