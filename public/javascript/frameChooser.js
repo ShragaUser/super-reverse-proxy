@@ -1,8 +1,9 @@
+/* eslint-disable no-undef */
 var frameChooserDiv = document.getElementById("frameChooser");
 
 var getWebSiteFrames = function (callback) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/sites', true);
+    xhr.open('GET', '/sites?dontProxy=true', true);
     xhr.onload = function (e) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -52,10 +53,30 @@ var dealWithSites = function(err, response){
  */
 var createOnClick = function(url, proxy){
     return function(){
-        document.getElementById("myFrame").setAttribute("src", url);
-        document.getElementById("myFrame").setAttribute("proxy", proxy);
-        navigator.serviceWorker.controller.postMessage(proxy);
+        send_message_to_sw(proxy).then(function(response){
+            document.getElementById("myFrame").setAttribute("src", url);
+            document.getElementById("myFrame").setAttribute("proxy", proxy);
+        });
     }
+}
+
+function send_message_to_sw(proxy){
+    return new Promise(function(resolve, reject){
+        // Create a Message Channel
+        var msg_chan = new MessageChannel();
+
+        // Handler for recieving message reply from service worker
+        msg_chan.port1.onmessage = function(event){
+            if(event.data.error){
+                reject(event.data.error);
+            }else{
+                resolve(event.data);
+            }
+        };
+
+        // Send message to service worker along with port for reply
+        navigator.serviceWorker.controller.postMessage(proxy, [msg_chan.port2]);
+    });
 }
 
 getWebSiteFrames(dealWithSites);

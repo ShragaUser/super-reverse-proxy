@@ -7,19 +7,19 @@ const applyRouteMiddleware = (app) => {
         const items = [{
             name: "Frame",
             display: "original frame",
-            logo: "1.png",
+            logo: "1.png/?dontProxy=true",
             url: "/?myProxyGoTo=http://localhost:3000/",
             proxy: "http://localhost:3000/"
         },{
             name: "site 1",
             display: "important site",
-            logo: "2.png",
+            logo: "2.png/?dontProxy=true",
             url: "/?myProxyGoTo=https://www.addictinggames.com",
             proxy: "https://www.addictinggames.com/"
         }, {
             name: "site 2",
             display: "important site 2",
-            logo: "3.png",
+            logo: "3.png/?dontProxy=true",
             url: "/?myProxyGoTo=https://www.wikipedia.com",
             proxy: "https://www.wikipedia.com/"
         }];
