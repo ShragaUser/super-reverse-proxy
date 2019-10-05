@@ -30,7 +30,7 @@ var attachServerUrlToXHR = function (open, XHR) {
 
 // Gets iframe from document
 var frame = document.getElementById("myFrame");
-frame.setAttribute("src", "./frame.html");
+frame.setAttribute("src", "./frame/?myProxyGoTo");
 
 // Attaches interceptor to iframe XHR function
 frame.onload = function () {

@@ -46,8 +46,13 @@ var dealWithSites = function(err, response){
     }
 }
 
+/**
+ * checks if given url is relative
+ * @param {string} url 
+ */
 var createOnClick = function(url){
     return function(){
+        var host = window.location.protocol+"//"+window.location.host;
         document.getElementById("myFrame").setAttribute("src", url);
     }
 }

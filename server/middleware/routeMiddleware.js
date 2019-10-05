@@ -1,7 +1,15 @@
+const path = require("path");
+
 const applyRouteMiddleware = (app) => {
+    
     app.get('/avocado', (req, res, next) => {
         res.send('OK');
     })
+
+    app.get('/frame', (req,res,next) =>{
+        res.sendFile(path.resolve(__dirname, "../../public/frame.html"));
+    })
+
     app.get('/sites', (req, res, next) => {
         const items = [{
             name: "Frame",

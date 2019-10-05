@@ -29,7 +29,11 @@ const applyProxyMiddleware = (app) => {
         memoizeHost: false
     });
 
-    app.all('/iframe/*', (req, res, next) => proxy(locationMap(fullURL(req)))(req, res, next));
+    const checkIfParamsExist = (req) => req.query.myProxyGoTo ? true : false;
+    const isProxy = (req,res,next) => checkIfParamsExist(req) ? proxy(locationMap(fullURL(req)))(req,res,next) : next();
+    app.all('/*', isProxy);
 }
+
+
 
 module.exports = { applyProxyMiddleware };
