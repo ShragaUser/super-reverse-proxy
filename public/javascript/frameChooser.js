@@ -47,10 +47,6 @@ var dealWithSites = function(err, response){
     }
 }
 
-/**
- * checks if given url is relative
- * @param {string} url 
- */
 var createOnClick = function(url, proxy){
     return function(){
         send_message_to_sw(proxy).then(function(response){

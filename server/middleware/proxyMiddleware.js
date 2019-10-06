@@ -3,8 +3,7 @@ const path = require("path");
 
 const {
     getNewResponseHeaders,
-    getNewRequestHeaders,
-    urlMap
+    getNewRequestHeaders
 } = require('../../config/config')();
 
 const applyProxyMiddleware = (app) => {
@@ -23,10 +22,12 @@ const applyProxyMiddleware = (app) => {
         },
         userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
             // recieves an Object of headers, returns an Object of headers.
-            return {
+            const returnHeaders = {
                 ...headers,
                 ...getNewResponseHeaders
-            };
+            }
+            returnHeaders.location ? delete returnHeaders.location : null;
+            return returnHeaders;
         },
         memoizeHost: false
     });
