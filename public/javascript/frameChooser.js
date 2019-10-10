@@ -14,58 +14,58 @@ var getWebSiteFrames = function (callback) {
         }
     };
     xhr.onerror = function (e) {
-        callback(xhr.statusText);
+        callback(e);
     };
     xhr.send(null);
 }
 
-var configureButton = function(button, name, display, logo ){
-    button.type="button";
-    button.name=name;
-    button.value=display;
-    button.id=name;
-    button.style.background="url('misc/"+logo+"') no-repeat";
-    button.style.height="70px";
-    button.style.width="500px";
-    button.style.backgroundSize="60px 60px";
-    button.style.textAlign="right";
-    button.style.display="inline-block";
-    button.style.padding="20px";
-    button.style.marginRight="20px";
-    button.style.color="red";
+var configureButton = function (button, name, display, logo) {
+    button.type = "button";
+    button.name = name;
+    button.value = display;
+    button.id = name;
+    button.style.background = "url('misc/" + logo + "') no-repeat";
+    button.style.height = "70px";
+    button.style.width = "500px";
+    button.style.backgroundSize = "60px 60px";
+    button.style.textAlign = "right";
+    button.style.display = "inline-block";
+    button.style.padding = "20px";
+    button.style.marginRight = "20px";
+    button.style.color = "red";
 }
 
-var dealWithSites = function(err, response){
-    if(!err){
+var dealWithSites = function (err, response) {
+    if (!err) {
         var data = JSON.parse(response);
         data.forEach(item => {
             var button = document.createElement("input");
             configureButton(button, item.name, item.display, item.logo);
-            button.onclick = createOnClick(item.url, item.proxy);
+            button.onclick = createOnClickHandler(item.url, item.proxy);
             frameChooserDiv.appendChild(button);
         })
     }
 }
 
-var createOnClick = function(url, proxy){
-    return function(){
-        send_message_to_sw(proxy).then(function(response){
+var createOnClickHandler = function (url, proxy) {
+    return function () {
+        send_proxy_to_sw(proxy).then(function (response) {
             document.getElementById("myFrame").setAttribute("src", url);
             document.getElementById("myFrame").setAttribute("proxy", proxy);
         });
     }
 }
 
-function send_message_to_sw(proxy){
-    return new Promise(function(resolve, reject){
+function send_proxy_to_sw(proxy) {
+    return new Promise(function (resolve, reject) {
         // Create a Message Channel
         var msg_chan = new MessageChannel();
 
         // Handler for recieving message reply from service worker
-        msg_chan.port1.onmessage = function(event){
-            if(event.data.error){
+        msg_chan.port1.onmessage = function (event) {
+            if (event.data.error) {
                 reject(event.data.error);
-            }else{
+            } else {
                 resolve(event.data);
             }
         };
@@ -76,3 +76,4 @@ function send_message_to_sw(proxy){
 }
 
 getWebSiteFrames(dealWithSites);
+

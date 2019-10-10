@@ -2,20 +2,20 @@ const httpProxy = require('express-http-proxy');
 const path = require("path");
 
 const {
-    getNewResponseHeaders,
-    getNewRequestHeaders
-} = require('../../config/config')();
+    newResponseHeaders,
+    newRequestHeaders
+} = require(path.resolve(__dirname, '../../config/config'))();
 
 const applyProxyMiddleware = (app) => {
     const proxy = (location) => httpProxy(location, {
         proxyReqPathResolver: (req) => {
-            const host = getHostFromReq(req.query.myProxyGoTo);
+            const host = getHostFromUrl(req.query.myProxyGoTo);
             return req.query.myProxyGoTo.substring(host.length);
         },
         proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
             proxyReqOpts.headers = {
                 ...proxyReqOpts.headers,
-                ...getNewRequestHeaders
+                ...newRequestHeaders
             };
 
             return proxyReqOpts;
@@ -24,7 +24,7 @@ const applyProxyMiddleware = (app) => {
             // recieves an Object of headers, returns an Object of headers.
             const returnHeaders = {
                 ...headers,
-                ...getNewResponseHeaders
+                ...newResponseHeaders
             }
             returnHeaders.location ? delete returnHeaders.location : null;
             return returnHeaders;
@@ -32,21 +32,19 @@ const applyProxyMiddleware = (app) => {
         memoizeHost: false
     });
 
-    const checkIfParamsExist = (req) => {
-        return req.query.myProxyGoTo !== undefined ? true : false;
-    }
-    const isProxy = (req, res, next) => checkIfParamsExist(req) ? proxy(getHostFromReq(req.query.myProxyGoTo))(req, res, next) : next();
-    app.all('/*', isProxy);
+    const checkIfParamsExist = req => !!req.query.myProxyGoTo;
+    const proxyIfNeeded = (req, res, next) => checkIfParamsExist(req) ? proxy(getHostFromUrl(req.query.myProxyGoTo))(req, res, next) : next();
+
+    app.all('/*', proxyIfNeeded);
     app.get('/', (req, res, next) => res.sendFile(path.resolve(__dirname, "../../public/index.html")));
 }
 
-const isIP = (url) => /^[0-9]/.test(url);
-const getHostFromReq = (url) => {
-    return isIP(url) ? url.split("/")[0] : url.split("/")[0] + "/" + url.split("/")[1] + "/" + url.split("/")[2];
-}
+const beginsWithIpV4Regex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/;
 
-
-
-module.exports = {
-    applyProxyMiddleware
+const isIP = url => beginsWithIpV4Regex.test(url);
+const getHostFromUrl = (url) => {
+    const [ipOrProtocol, blank, host] = url.split("/");
+    return isIP(url) ? ipOrProtocol : ipOrProtocol + "//" + host;
 };
+
+module.exports = { applyProxyMiddleware };

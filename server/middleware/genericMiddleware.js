@@ -8,6 +8,7 @@ const isAlive = (req, res, next) => {
     res.status(200);
     res.send('Server Is Up');
 }
+
 const applyGenericMiddleware = (app) => {
 
     app.use('/IsAlive', isAlive);
@@ -25,7 +26,7 @@ const applyGenericMiddleware = (app) => {
     );
     app.use(cookieParser());
 
-    app.use('/static/',express.static('public'));
+    app.use('/static/', express.static('public'));
 }
 
 module.exports = { applyGenericMiddleware };
